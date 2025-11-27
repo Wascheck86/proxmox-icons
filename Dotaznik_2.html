@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rodinný formulář pro SOL – Širší rodina</title>
+
+  <style>
+    /*
+       ================================
+       ZDE JE PŮVODNÍ STYL (CSS) Z TVÉHO SOUBORU
+       ================================
+       (Zůstává beze změny, aby se zachoval design)
+    */
+    :root {
+      --bg-color: #f0f4f8;          /* Výchozí barva pozadí */
+      --card-bg: #ffffff;           /* Barva karty */
+      --accent: #eb2563;            /* Hlavní růžová */
+      --accent-dark: #1e40af;       /* Tmavší modrá na hover */
+      --accent-soft: rgba(37, 99, 235, 0.12);
+      --text-main: #0f172a;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --error: #b91c1c;
+      --success: #15803d;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.22);
+      --radius-lg: 24px;
+    }
+    body.dark {
+      --bg-color: #020617;
+      --card-bg: #020617;
+      --accent-soft: rgba(96, 165, 250, 0.12);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: #1f2937;
+      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.7);
+    }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.35), transparent 55%), var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s ease, color 0.3s ease;
+      color: var(--text-main);
+    }
+    .wrapper {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .card {
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.07), transparent 55%), var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 24px 20px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(129, 140, 248, 0.25), transparent 50%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .header-text h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: 0.03em;
+    }
+    .header-text p {
+      margin: 3px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .welcome-block {
+      margin-bottom: 25px;
+    }
+    .welcome-block h2 {
+      margin: 0 0 6px;
+      font-size: 1.8rem;
+      color: #FFD700;
+      font-weight: 800;
+    }
+    .welcome-block p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    /* Zde se odebraly styly pro progress bar a kroky */
+
+    form {
+      margin: 0;
+    }
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .label-main {
+      display: block;
+      margin-bottom: 3px;
+    }
+    .label-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.95rem;
+      background: rgba(15, 23, 42, 0.01);
+      color: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+      background: rgba(15, 23, 42, 0.02);
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .field-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .field-half {
+      flex: 1 1 0;
+      min-width: calc(50% - 6px);
+    }
+    @media (max-width: 480px) {
+      .field-half {
+        min-width: 100%;
+      }
+    }
+    .section {
+      margin-bottom: 14px;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, opacity 0.2s ease;
+    }
+    .btn-primary {
+      margin-top: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #ffffff;
+      box-shadow: 0 9px 18px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+    }
+    .btn-icon {
+      font-size: 1.1rem;
+      margin-top: -1px;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .notice {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .notice.error {
+      color: var(--error);
+    }
+    .notice.success {
+      color: var(--success);
+    }
+    .final-screen {
+      text-align: center;
+      padding-top: 16px;
+    }
+    .final-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.08);
+      color: var(--success);
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
+    /* Konfety jsou ponechány */
+    .confetti-container {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 999;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      background: red;
+      opacity: 0.9;
+      border-radius: 2px;
+      animation-name: confetti-fall;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-10vh) rotateZ(0deg) rotateX(0deg);
+      }
+      100% {
+        transform: translateY(110vh) rotateZ(360deg) rotateX(180deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="card-inner">
+        <div class="header">
+          <div class="avatar" id="avatarCircle">S</div>
+          <div class="header-text">
+            <h1>Rodinný formulář pro SOL</h1>
+            <p>Základní údaje pro širší rodinu.</p>
+          </div>
+        </div>
+
+        <div id="welcomeBlock" class="welcome-block">
+          <h2 id="welcomeHeading">Vítej!</h2>
+          <p>
+            Tento zjednodušený formulář pomůže SOL poznat naše nejbližší příbuzné, aby uměla odpovědět na základní otázky o rodinných vazbách.
+          </p>
+        </div>
+
+        <form id="familyForm" method="POST" action="https://formsubmit.co/vaclav.faraon@gmail.com" novalidate>
+            <input type="hidden" name="_next" value="https://[TVŮJ GITHUB PROFIL].github.io/Dotaznik.html?status=success">
+            <input type="hidden" name="_captcha" value="false">
+
+            <div class="section">
+              <span class="step-title" id="stepTitleText">Základní informace</span>
+              <span class="step-subtitle" id="stepSubtitleText">
+                Uveďte prosím vaše základní údaje, jaký je váš vztah k Václavovi a co vás potěší.
+              </span>
+            </div>
+
+            <div class="section field-row">
+              <div class="field-half">
+                <label>
+                  <span class="label-main">Jméno / Přezdívka <span style="color: var(--error)">*</span></span>
+                  <input type="text" name="jmeno" id="fieldJmeno" required />
+                  <div class="error-text hidden" data-error-for="fieldJmeno">Prosím napiš své jméno.</div>
+                </label>
+              </div>
+
+              <div class="field-half">
+                <label>
+                  <span class="label-main">Váš vztah k Václavovi <span style="color: var(--error)">*</span></span>
+                  <span class="label-hint">Jaký vztah k němu máte vy? (Klíčové pole)</span>
+                  <select name="vztah_k_vaclavovi" id="fieldVztah" required>
+                    <option value="">-- Vyberte --</option>
+                    <option value="matka">Matka</option>
+                    <option value="otec">Otec</option>
+                    <option value="babicka">Babička (z Václavovy strany)</option>
+                    <option value="deda">Dědeček (z Václavovy strany)</option>
+                    <option value="sestra">Sestra</option>
+                    <option value="bratr">Bratr</option>
+                    <option value="partner_sestry">Partner sestry / Švagr</option>
+                    <option value="partner_bratra">Partner bratra / Švagrová</option>
+                    <option value="jiny_pribuzny">Jiný blízký příbuzný</option>
+                  </select>
+                  <div class="error-text hidden" data-error-for="fieldVztah">Prosím vyber vztah.</div>
+                </label>
+              </div>
+            </div>
+            
+            <div class="section field-row">
+              <div class="field-half">
+                <label>
+                  <span class="label-main">Datum narození</span>
+                  <span class="label-hint">YYYY-MM-DD, pro přání k narozeninám.</span>
+                  <input type="date" name="narozeni" id="fieldNarozeni" />
+                </label>
+              </div>
+              <div class="field-half">
+  		  <label>
+    		      <span class="label-main">Svátek</span>
+    	   	      <span class="label-hint">DD.MM, pro přání ke svátku (např. 20.04)</span>
+    		      <input type="text" name="svatek" placeholder="DD.MM (např. 20.04)" id="fieldSvatek" />
+  		  </label>
+		</div>
+            </div>
+
+            <div class="section">
+                <label>
+                    <span class="label-main">Město / Obec bydliště</span>
+                    <span class="label-hint">SOL to pomůže s lokalizací a regionálními dotazy.</span>
+                    <input type="text" name="bydliste" id="fieldBydliste" />
+                </label>
+            </div>
+            
+            <div class="section">
+                <label>
+                    <span class="label-main">Oblíbená aktivita / Koníček</span>
+                    <span class="label-hint">Co děláte ve volném čase nejraději? (Např. turistika, zahrádka, čtení)</span>
+                    <input type="text" name="oblíbená_aktivita" id="fieldAktivita" />
+                </label>
+            </div>
+
+            <div class="section">
+                <label>
+                    <span class="label-main">Co je pro Vás typické?</span>
+                    <span class="label-hint">Jedna věc nebo věta, která Vás nejlépe vystihuje. (Např. "Pořádkumilovný.", "Miluje křížovky.")</span>
+                    <input type="text" name="typ_osoby_popis" id="fieldPopis" />
+                </label>
+            </div>
+
+            <div class="section">
+                <label>
+                    <span class="label-main">Co Vás dokáže nejvíce potěšit?</span>
+                    <span class="label-hint">Krátké přání pro Sol. (Např. "Hezká kytka," "Dobré pivo," "Klid")</span>
+                    <textarea name="potěší" id="fieldPotesi"></textarea>
+                </label>
+            </div>
+
+
+          <div class="notice" id="notice"></div>
+
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            Odeslat data pro SOL asistenta
+            <span class="btn-icon">★</span>
+          </button>
+        </form>
+
+        <div id="finalScreen" class="final-screen hidden">
+          <div class="final-pill">
+            <span>✅</span> Profil uložený v SOL
+          </div>
+          <h2 id="finalTitle" style="margin-top:0; font-size:1.4rem;">Hotovo!</h2>
+          <p id="finalSubtitle" style="color:var(--text-muted); font-size:0.95rem; line-height:1.4;">
+             Děkujeme za vyplnění. Data byla bezpečně odeslána na e-mail Václavovi.
+          </p>
+          <button type="button" class="btn btn-primary" onclick="window.location.href = window.location.pathname">
+            Vyplnit dalšímu členovi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================================
+    // === ZABEZPEČENÍ HESLEM (POZOR: NENÍ BEZPEČNÉ!) ===========
+    // ==========================================================
+    (function checkPassword() {
+        // === NASTAV ZDE SVÉ HESLO ===
+        const requiredPassword = "rodina2025"; 
+        // =============================
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        let enteredPassword = urlParams.get('heslo');
+        
+        // Zabrání zobrazení okna, pokud je heslo v URL
+        if (enteredPassword !== requiredPassword) {
+            enteredPassword = prompt("Pro přístup k formuláři zadejte prosím heslo:");
+        }
+
+        if (enteredPassword !== requiredPassword) {
+            // Zablokuje stránku, pokud heslo nesedí
+            document.body.innerHTML = "<h1>Přístup odepřen.</h1><p>Zadali jste špatné heslo nebo nemáte přístup.</p>";
+            document.body.style.backgroundColor = '#b91c1c';
+            throw new Error("Přístup zablokován kvůli heslu.");
+        }
+    })();
+
+    // ===============================
+    // JEDNODUCHÁ LOGIKA FORMULÁŘE
+    // ===============================
+    const body = document.body;
+    const familyForm = document.getElementById("familyForm");
+    const finalScreen = document.getElementById("finalScreen");
+    const welcomeHeading = document.getElementById("welcomeHeading");
+    const avatarCircle = document.getElementById("avatarCircle");
+    const notice = document.getElementById("notice");
+    const fieldJmeno = document.getElementById("fieldJmeno");
+    const fieldVztah = document.getElementById("fieldVztah");
+
+    // ===============================
+    // DARK MODE Z PŮVODNÍHO KÓDU
+    // ===============================
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      body.classList.add("dark");
+    }
+
+    // ===============================
+    // ZPRACOVÁNÍ STATUSU PO ODESLÁNÍ
+    // ===============================
+    (function handleSubmissionStatus() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+        const jmeno = urlParams.get('jmeno'); // Získáme jméno z původního odkazu
+        
+        if (status === 'success') {
+            familyForm.classList.add("hidden");
+            finalScreen.classList.remove("hidden");
+            
+            const nameText = jmeno ? `Hotovo, ${jmeno}!` : "Hotovo!";
+            document.getElementById("finalTitle").textContent = nameText;
+
+            // Spustíme konfety z původního kódu
+            launchConfetti();
+        }
+    })();
+
+    // ===============================
+    // PERSONALIZACE A VALIDACE
+    // ===============================
+    (function handleNameAndValidation() {
+        const params = new URLSearchParams(window.location.search);
+        let name = params.get("jmeno");
+
+        // 1. Nastavení uvítání, avataru a barev
+        if (name) {
+            name = name.trim().charAt(0).toUpperCase() + name.trim().slice(1).toLowerCase();
+            welcomeHeading.textContent = `Vítej, ${name}!`;
+            avatarCircle.textContent = name.charAt(0);
+            
+            // Přenese jméno do formuláře, aby ho uživatel nemusel psát
+            if (fieldJmeno) {
+                fieldJmeno.value = name;
+            }
+
+            // Unikátní barvy podle jména (funkce z tvého původního kódu)
+            const color = colorFromString(name);
+            body.style.setProperty("--bg-color", color.baseBg);
+            document.documentElement.style.setProperty("--accent", color.accent);
+            document.documentElement.style.setProperty("--accent-dark", color.accentDark);
+        }
+
+        // 2. Základní validace (Jméno a Vztah)
+        familyForm.addEventListener("submit", function (e) {
+            let valid = true;
+            
+            // Vyčistit chyby
+            familyForm.querySelectorAll(".field-error").forEach((el) => el.classList.remove("field-error"));
+            familyForm.querySelectorAll(".error-text").forEach((el) => el.classList.add("hidden"));
+
+            if (!fieldJmeno.value.trim()) {
+                markError(fieldJmeno, "fieldJmeno");
+                valid = false;
+            }
+
+            if (!fieldVztah.value.trim()) {
+                markError(fieldVztah, "fieldVztah");
+                valid = false;
+            }
+
+            if (!valid) {
+                e.preventDefault();
+                notice.textContent = "Prosím vyplň zvýrazněná pole (Jméno a Vztah).";
+                notice.className = "notice error";
+            } else {
+                notice.textContent = "Odesílám data...";
+                notice.className = "notice";
+            }
+        });
+
+        function markError(field, errorKey) {
+            field.classList.add("field-error");
+            const err = document.querySelector(`[data-error-for="${errorKey}"]`);
+            if (err) err.classList.remove("hidden");
+        }
+    })();
+
+
+    // ===============================
+    // POMOCNÁ FUNKCE Z PŮVODNÍHO KÓDU (Barvy)
+    // ===============================
+    function colorFromString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const h = Math.abs(hash) % 360;
+      const baseBg = `hsl(${h}, 70%, 92%)`;
+      const accent = `hsl(${h}, 75%, 55%)`;
+      const accentDark = `hsl(${h}, 80%, 45%)`;
+      return { baseBg, accent, accentDark };
+    }
+
+    // ===============================
+    // KONFETY Z PŮVODNÍHO KÓDU
+    // ===============================
+    function launchConfetti() {
+      const container = document.createElement("div");
+      container.className = "confetti-container";
+      document.body.appendChild(container);
+
+      const colors = [
+        "#f97316", "#22c55e", "#3b82f6",
+        "#eab308", "#ec4899", "#8b5cf6"
+      ];
+
+      const confettiCount = 150;
+      for (let i = 0; i < confettiCount; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+
+        const left = Math.random() * 100;
+        const duration = 2 + Math.random() * 1.5;
+        const delay = Math.random() * 0.3;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        piece.style.left = left + "vw";
+        piece.style.backgroundColor = color;
+        piece.style.animationDuration = duration + "s";
+        piece.style.animationDelay = delay + "s";
+
+        container.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        container.remove();
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
